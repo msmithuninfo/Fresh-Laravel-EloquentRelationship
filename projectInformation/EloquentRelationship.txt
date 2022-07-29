@@ -1,0 +1,130 @@
+DatabaseName: EloquentRelationship
+Step-1: create model and migrateion
+	php artisan make:model ModelName -m
+	User
+	Phone
+	Category
+	Tag
+	Post
+	Task
+	Comment
+	PostTag
+Step-2: work with database>migrations>
+users_table=>
+	    $table->string('name');
+            $table->string('email')->unique();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+   
+phones_table=>
+	    $table->string('name');
+
+categories_table=>
+	    $table->string('name');
+            $table->unsignedBigInteger('parent_id');	    
+
+tags_table=>
+	    $table->string('name');
+
+posts_table=>
+	    $table->string('title', 90);   // Hello World
+            $table->string('slug', 100)->unique();    // hello-world
+            $table->enum('status', ['active', 'inactive', 'rejected'])->default('active');    
+            $table->text('description')->nullable();
+            $table->unsignedBigInteger('category_id');
+
+            $table->foreign('category_id')->references('id')->on('categories');
+
+tasks_table=>
+	    $table->string('title', 150);
+            $table->text('details')->nullable();
+            $table->enum('status', ['Open', 'Closed'])->default('Open');
+
+comments_table=>   
+	    $table->string('comment');
+            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('post_id');
+            
+            $table->foreign('post_id')->references('id')->on('posts');
+            $table->foreign('user_id')->references('id')->on('users');
+
+post_tags_table=> 
+            $table->unsignedBigInteger('post_id');
+            $table->unsignedBigInteger('tag_id');
+            
+            $table->foreign('post_id')->references('id')->on('posts');
+            $table->foreign('tag_id')->references('id')->on('tags');
+
+Step-3: work with Models>
+User=>
+protected $fillable = [
+        'name',
+        'email',
+        'password',
+    ];
+
+Phone=>
+protected $fillable = [
+        'name',
+    ];
+
+Category=>
+protected $fillable = [
+        'name',
+        'parent_id',
+    ];
+
+Tag=>
+protected $fillable = [
+        'name',
+    ];
+
+Post=>
+protected $fillable = [
+        'title',
+        'slug',
+        'description',
+        'status',
+        'category_id',
+    ];
+
+Task=>
+protected $fillable = [
+        'title',
+        'details',
+        'status'
+    ];
+
+Comment=>
+protected $fillable = [
+        'comment',
+        'user_id',
+        'post_id',
+    ];
+
+PostTag=>
+protected $fillable = [
+        'post_id',
+        'tag_id',
+    ];
+
+Step-4: run migration>
+php artisan migrate
+
+Step-5: create controller>>Frontend>>PagesController
+php artisan make:controller Frontend/PagesController -r
+
+Step-6: Route create
+Route::get('/', [PagesController::class, 'index'])->name('index');
+Route::get('/posts/{id}', [PagesController::class, 'postShow'])->name('posts.show');
+Route::get('/categories/{id}', [PagesController::class, 'categoriesShow'])->name('categories.index');
+
+Step-7: route theke controller a duke sei controller theke blade file a return kore dibo
+Step-8: php artisan serve
+
+Step-9: database a data gulu diye nibo
+
+
+
+
